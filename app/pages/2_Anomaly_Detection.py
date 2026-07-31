@@ -8,14 +8,25 @@ st.write("""
 This page identifies unusual sales patterns in the retail inventory dataset
 using statistical anomaly detection techniques.
 """)
+from pathlib import Path
 import pandas as pd
 
-df = pd.read_csv("../data/cleaned/retail_store_inventory_cleaned.csv")
+BASE_DIR = Path(__file__).resolve().parents[2]
+
+df = pd.read_csv(
+    BASE_DIR / "data" / "cleaned" / "retail_store_inventory_cleaned.csv",
+    parse_dates=["Date"]
+)
+
+
 daily_sales = (
     df.groupby("Date")["Units Sold"]
       .sum()
       .reset_index()
 )
+
+daily_sales["Date"] = daily_sales["Date"].dt.strftime("%Y-%m-%d")
+
 st.subheader("Daily Sales")
 
 st.dataframe(daily_sales.head())
