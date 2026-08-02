@@ -86,7 +86,13 @@ ax.scatter(
 
 ax.set_title("Z-Score Anomaly Detection")
 
+import matplotlib.dates as mdates
+
+ax.xaxis.set_major_locator(mdates.MonthLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+
 plt.xticks(rotation=45)
+plt.tight_layout()
 
 ax.legend()
 
