@@ -104,3 +104,71 @@ from the average daily sales.
 These anomalies may indicate unusual demand spikes, inventory shortages,
 promotional campaigns, or unexpected supply chain events.
 """)
+
+#IQR Anomaly Detection
+
+st.subheader("IQR Anomaly Detection")
+
+Q1 = daily_sales["Units Sold"].quantile(0.25)
+Q3 = daily_sales["Units Sold"].quantile(0.75)
+
+IQR = Q3 - Q1
+
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+daily_sales["IQR_Anomaly"] = (
+    (daily_sales["Units Sold"] < lower_bound) |
+    (daily_sales["Units Sold"] > upper_bound)
+)
+
+iqr_count = daily_sales["IQR_Anomaly"].sum()
+
+st.metric(
+    label="IQR Anomalies",
+    value=int(iqr_count)
+)
+
+st.subheader("Detected IQR Anomalies")
+
+st.dataframe(
+    daily_sales[daily_sales["IQR_Anomaly"]]
+)
+
+fig, ax = plt.subplots(figsize=(14,5))
+
+ax.plot(
+    daily_sales["Date"],
+    daily_sales["Units Sold"],
+    label="Daily Sales"
+)
+
+ax.scatter(
+    daily_sales.loc[daily_sales["IQR_Anomaly"], "Date"],
+    daily_sales.loc[daily_sales["IQR_Anomaly"], "Units Sold"],
+    color="orange",
+    label="IQR Anomalies"
+)
+
+ax.set_title("IQR Anomaly Detection")
+ax.set_xlabel("Date")
+ax.set_ylabel("Units Sold")
+
+import matplotlib.dates as mdates
+
+ax.xaxis.set_major_locator(mdates.MonthLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+ax.legend()
+
+st.pyplot(fig)
+
+st.success("""
+The IQR method identifies observations that fall outside the normal spread of the data.
+
+These unusual sales values may indicate inventory shortages, unexpected demand surges,
+or operational issues that require further investigation.
+""")
