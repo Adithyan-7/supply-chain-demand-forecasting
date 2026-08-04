@@ -172,3 +172,56 @@ The IQR method identifies observations that fall outside the normal spread of th
 These unusual sales values may indicate inventory shortages, unexpected demand surges,
 or operational issues that require further investigation.
 """)
+#Compare Z-Score and IQR
+
+st.subheader("Comparison of Detection Methods")
+
+comparison = pd.DataFrame({
+    "Method": ["Z-Score", "IQR"],
+    "Anomalies Detected": [
+        int(zscore_count),
+        int(iqr_count)
+    ]
+})
+
+st.dataframe(comparison)
+
+fig, ax = plt.subplots(figsize=(6,4))
+
+ax.bar(
+    comparison["Method"],
+    comparison["Anomalies Detected"]
+)
+
+ax.set_title("Comparison of Anomaly Detection Methods")
+ax.set_xlabel("Method")
+ax.set_ylabel("Number of Anomalies")
+
+st.pyplot(fig)
+
+st.subheader("Summary")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.metric(
+        "Z-Score Anomalies",
+        int(zscore_count)
+    )
+
+with col2:
+    st.metric(
+        "IQR Anomalies",
+        int(iqr_count)
+    )
+
+    st.subheader("Conclusion")
+
+st.markdown("""
+Both statistical methods successfully identified unusual sales observations.
+
+- **Z-Score** is effective when the data is approximately normally distributed.
+- **IQR** is more robust to skewed distributions and extreme values.
+
+Using both methods together provides a more comprehensive understanding of unusual demand patterns and helps businesses investigate potential inventory issues or unexpected sales events.
+""")
