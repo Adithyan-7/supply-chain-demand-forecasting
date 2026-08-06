@@ -26,6 +26,7 @@ daily_sales = (
       .sum()
       .reset_index()
 )
+daily_sales["Date"] = daily_sales["Date"].dt.strftime("%Y-%m-%d")
 
 st.subheader("Daily Sales")
 
