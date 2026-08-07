@@ -76,7 +76,7 @@ with col2:
         len(test)
     )
 
-    st.subheader("Training Dataset")
+st.subheader("Training Dataset")
 
 st.dataframe(train.head())
 
@@ -118,4 +118,125 @@ st.success("""
 The dataset is divided chronologically to preserve the temporal order of observations.
 
 The training data is used to build forecasting models, while the testing data is reserved for evaluating how well the models predict future demand.
+""")
+
+st.subheader("Moving Average Forecast")
+
+train = train.copy()
+
+train["Moving Average"] = (
+    train["Units Sold"]
+    .rolling(window=7)
+    .mean()
+)
+
+fig, ax = plt.subplots(figsize=(14,5))
+
+ax.plot(
+    train["Date"],
+    train["Units Sold"],
+    label="Actual Sales"
+)
+
+ax.plot(
+    train["Date"],
+    train["Moving Average"],
+    label="7-Day Moving Average"
+)
+
+ax.set_title("7-Day Moving Average")
+ax.set_xlabel("Date")
+ax.set_ylabel("Units Sold")
+
+import matplotlib.dates as mdates
+
+ax.xaxis.set_major_locator(mdates.MonthLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+ax.legend()
+
+st.pyplot(fig)
+
+
+forecast_value = train["Units Sold"].tail(7).mean()
+
+test = test.copy()
+
+test["Moving Average Forecast"] = forecast_value
+
+
+fig, ax = plt.subplots(figsize=(14,5))
+
+ax.plot(
+    test["Date"],
+    test["Units Sold"],
+    label="Actual Sales"
+)
+
+ax.plot(
+    test["Date"],
+    test["Moving Average Forecast"],
+    label="Moving Average Forecast"
+)
+
+ax.set_title("Moving Average Forecast vs Actual")
+
+ax.set_xlabel("Date")
+ax.set_ylabel("Units Sold")
+
+ax.xaxis.set_major_locator(mdates.MonthLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+ax.legend()
+
+st.pyplot(fig)
+
+
+from sklearn.metrics import (
+    mean_absolute_error,
+    mean_squared_error,
+    mean_absolute_percentage_error
+)
+import numpy as np
+
+mae = mean_absolute_error(
+    test["Units Sold"],
+    test["Moving Average Forecast"]
+)
+
+rmse = np.sqrt(
+    mean_squared_error(
+        test["Units Sold"],
+        test["Moving Average Forecast"]
+    )
+)
+
+mape = mean_absolute_percentage_error(
+    test["Units Sold"],
+    test["Moving Average Forecast"]
+)
+
+st.subheader("Moving Average Performance")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("MAE", f"{mae:.2f}")
+
+with col2:
+    st.metric("RMSE", f"{rmse:.2f}")
+
+with col3:
+    st.metric("MAPE", f"{mape:.2%}")
+
+st.success("""
+The Moving Average model provides a simple baseline forecast by averaging recent sales values.
+
+Although it smooths short-term fluctuations, it may not capture sudden demand changes or longer-term trends. Its evaluation metrics provide a benchmark for comparison with the ARIMA model.
 """)
