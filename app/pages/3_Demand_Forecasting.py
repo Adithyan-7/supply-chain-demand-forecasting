@@ -240,3 +240,111 @@ The Moving Average model provides a simple baseline forecast by averaging recent
 
 Although it smooths short-term fluctuations, it may not capture sudden demand changes or longer-term trends. Its evaluation metrics provide a benchmark for comparison with the ARIMA model.
 """)
+
+
+st.subheader("ARIMA Forecasting")
+
+from statsmodels.tsa.arima.model import ARIMA
+
+arima_model = ARIMA(
+    train["Units Sold"],
+    order=(1, 1, 1)
+)
+
+arima_result = arima_model.fit()
+
+arima_forecast = arima_result.forecast(
+    steps=len(test)
+)
+
+test["ARIMA Forecast"] = arima_forecast.values
+
+fig, ax = plt.subplots(figsize=(14, 5))
+
+ax.plot(
+    test["Date"],
+    test["Units Sold"],
+    label="Actual Sales"
+)
+
+ax.plot(
+    test["Date"],
+    test["ARIMA Forecast"],
+    label="ARIMA Forecast"
+)
+
+ax.set_title("ARIMA Forecast vs Actual")
+ax.set_xlabel("Date")
+ax.set_ylabel("Units Sold")
+
+ax.xaxis.set_major_locator(mdates.MonthLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+ax.legend()
+
+st.pyplot(fig)
+
+arima_mae = mean_absolute_error(
+    test["Units Sold"],
+    test["ARIMA Forecast"]
+)
+
+arima_rmse = np.sqrt(
+    mean_squared_error(
+        test["Units Sold"],
+        test["ARIMA Forecast"]
+    )
+)
+
+arima_mape = mean_absolute_percentage_error(
+    test["Units Sold"],
+    test["ARIMA Forecast"]
+)
+st.subheader("ARIMA Performance")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("MAE", f"{arima_mae:.2f}")
+
+with col2:
+    st.metric("RMSE", f"{arima_rmse:.2f}")
+
+with col3:
+    st.metric("MAPE", f"{arima_mape:.2%}")
+    
+st.subheader("Model Comparison") 
+
+comparison = pd.DataFrame({
+    "Model": ["Moving Average", "ARIMA"],
+    "MAE": [mae, arima_mae],
+    "RMSE": [rmse, arima_rmse],
+    "MAPE": [mape, arima_mape]
+})
+
+st.dataframe(comparison)
+
+best_model = comparison.loc[
+    comparison["MAPE"].idxmin(),
+    "Model"
+]
+
+st.success(
+    f"Best-performing model based on MAPE: {best_model}"
+)
+
+st.subheader("Forecasting Conclusion")
+
+st.markdown("""
+Two forecasting approaches were evaluated:
+
+- **7-Day Moving Average**
+- **ARIMA**
+
+The models were evaluated using MAE, RMSE, and MAPE. Lower error values indicate better forecasting performance.
+
+The model with the lower forecasting error provides the more suitable baseline for supporting future demand planning and inventory management.
+""")
