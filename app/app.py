@@ -48,3 +48,53 @@ st.markdown("""
 - Statsmodels (ARIMA)
 - Streamlit
 """)
+
+st.divider()
+
+st.subheader("Project Modules")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.info(
+        """
+        ### 📊 Exploratory Analysis
+        
+        Understand sales, inventory,
+        category and regional patterns.
+        """
+    )
+
+with col2:
+    st.warning(
+        """
+        ### 🚨 Anomaly Detection
+        
+        Identify unusual demand patterns
+        using Z-Score and IQR methods.
+        """
+    )
+
+with col3:
+    st.success(
+        """
+        ### 📈 Demand Forecasting
+        
+        Forecast future demand using
+        Moving Average and ARIMA.
+        """
+    )
+
+    st.divider()
+
+st.subheader("Project Workflow")
+
+st.markdown("""
+**Data Preprocessing → Exploratory Analysis → Anomaly Detection → Demand Forecasting → Business Insights**
+""")
+
+st.divider()
+
+st.caption(
+    "Supply Chain Analytics — Demand Forecasting & Anomaly Detection"
+)
