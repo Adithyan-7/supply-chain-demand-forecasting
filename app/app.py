@@ -50,42 +50,61 @@ st.markdown("""
 """)
 
 st.divider()
-
 st.subheader("Project Modules")
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.info(
-        """
-        ### 📊 Exploratory Analysis
-        
-        Understand sales, inventory,
-        category and regional patterns.
-        """
-    )
+    st.markdown("""
+    <div style="
+        background-color: #173451;
+        padding: 20px;
+        border-radius: 10px;
+        min-height: 140px;
+    ">
+        <h3>📊 Exploratory Analysis</h3>
+        <p>Understand sales, inventory, category and regional patterns.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col2:
-    st.warning(
-        """
-        ### 🚨 Anomaly Detection
-        
-        Identify unusual demand patterns
-        using Z-Score and IQR methods.
-        """
-    )
+    st.markdown("""
+    <div style="
+        background-color: #4a4a12;
+        padding: 20px;
+        border-radius: 10px;
+        min-height: 140px;
+    ">
+        <h3>🚨 Anomaly Detection</h3>
+        <p>Identify unusual demand patterns using Z-Score and IQR methods.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col3:
-    st.success(
-        """
-        ### 📈 Demand Forecasting
-        
-        Forecast future demand using
-        Moving Average and ARIMA.
-        """
-    )
+    st.markdown("""
+    <div style="
+        background-color: #123d2b;
+        padding: 20px;
+        border-radius: 10px;
+        min-height: 140px;
+    ">
+        <h3>📈 Demand Forecasting</h3>
+        <p>Forecast future demand using Moving Average and ARIMA.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.divider()
+with col4:
+    st.markdown("""
+    <div style="
+        background-color: #3d2854;
+        padding: 20px;
+        border-radius: 10px;
+        min-height: 140px;
+    ">
+        <h3>💡 Business Insights</h3>
+        <p>Translate analytical findings into supply-chain recommendations.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.subheader("Project Workflow")
 
